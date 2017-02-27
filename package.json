@@ -1,0 +1,22 @@
+{
+  "name": "codegenerator",
+  "description": "A simple command line utility to generate any number of randomly-generated alphanumeric codes of any length.",
+  "version": "0.1.0",
+  "main": "getcodes",
+  "keywords": [
+    "alphanumeric",
+    "codes",
+    "generator",
+    "command",
+    "line",
+    "script",
+    "node",
+    "commander"
+  ],
+  "author": "Robbie Antenesse <dev@alamantus.com>",
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^2.9.0",
+    "knuth-shuffle": "^1.0.1"
+  }
+}

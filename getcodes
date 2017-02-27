@@ -1,0 +1,79 @@
+#!/usr/bin/env node
+
+let program = require('commander');
+let shuffle = require('knuth-shuffle').knuthShuffle;
+
+let generatedValues = [];
+
+program
+  .version('0.1.0')
+  .option('-n, --number <n>', 'The number of codes to generate <integer>. Default 1.', parseInt)
+  .option('-l, --length <n>', 'The length of the generated codes <integer>. Default 8.', parseInt)
+  .option('-c, --charset <chars>', 'The characters to use to generate the codes <string>. Default 0-9, A-Z, a-z.')
+  .option('-u, --uniqueOnly', 'Generate only unique codes.');
+
+program.on('--help', function(){
+  console.log('  Examples:');
+  console.log('');
+  console.log('  The code below will generate 10 unique codes that are 6 characters long using only the letters a-n:');
+  console.log('    $ node getcodes -u -n 10 -l 6 -c "abcdefghijklmn"');
+  console.log('');
+  console.log('');
+  console.log('  Save results to a file with a pipe:');
+  console.log('    $ node getcodes > generated-codes.txt');
+  console.log('');
+});
+
+program.parse(process.argv);
+
+
+/********************
+  Run the Program
+*********************/
+
+if (!program.number) {
+  program.number = 1;
+}
+
+for (let i = 0; i < program.number; i++) {
+  let value = generate(program.length, program.charset);
+  if (program.uniqueOnly) {
+    while (generatedValues.indexOf(value) >= 0) {
+      value = generate(program.length, program.charset);
+    }
+  }
+  generatedValues.push(value);
+}
+
+console.log(generatedValues.join('\n'));
+
+
+function generate (length, charset) {
+  length = (length !== undefined) ? length : 8;
+
+  if (charset) {
+    charset = charset.split('');
+  } else {
+    charset = [];
+    // ASCII 0–9
+    for (let i = 48; i <= 57; i++) {
+      charset.push(String.fromCharCode(i));
+    }
+    // ASCII A–Z
+    for (let i = 65; i <= 90; i++) {
+      charset.push(String.fromCharCode(i));
+    }
+    // ASCII a–z
+    for (let i = 97; i <= 122; i++) {
+      charset.push(String.fromCharCode(i));
+    }
+  }
+
+  let code = '';
+
+  for (let i = 0; i < length; i++) {
+    code += shuffle(charset)[0];
+  }
+
+  return code;
+}
